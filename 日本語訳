@@ -1,0 +1,61 @@
+// 既定の体力と攻撃力を設定
+const playerHP = 100;   //プレイヤー体力は100です
+const playerATK = 10;   //プレイヤーの攻撃力は10です
+const enemyHP = 100;    //敵の体力は100です
+const enemyATK = 8;     //敵の攻撃力は8です
+
+// ゲームの状態を表す変数
+let gameEnd = false;    //ゲーム終了のフラグを初期化
+
+// プレイヤーと敵の状態を管理するオブジェクト
+const player = {
+  hp: playerHP,     //プレイヤーはhp(体力)とatk(攻撃力)のプロパティを持ちます
+  atk: playerATK
+};
+
+const enemy = {
+  hp: enemyHP,      //敵はhp(体力)とatk(攻撃力)のプロパティを持ちます
+  atk: enemyATK
+};
+
+// メインのゲームループ
+while (!gameEnd) {
+  // プレイヤーの行動を入力させる
+  const playerAction = prompt("攻撃[a] or 防御[d]");   //プレイヤー動作選択の変数(攻撃か防御か)
+
+  // 敵の行動をランダムで決定する
+  const enemyAction = Math.random() < 0.5 ? "attack" : "defend"; //敵動作選択の変数(攻撃か防御か)
+
+  // プレイヤーと敵の行動に従って攻撃力を計算する
+  let playerDamage = 0;  //プレイヤーのダメージ変数の初期化
+  let enemyDamage = 0;   //敵のダメージ変数の初期化
+
+  //動作選択に応じたダメージの引数
+  if (playerAction === "a" && enemyAction === "attack") { //プレイヤー攻撃 かつ 敵が攻撃の場合
+    playerDamage = enemy.atk; //プレイヤーのダメージは敵の攻撃力の値分
+    enemyDamage = player.atk; //敵の       ダメージはプレイヤーの攻撃力の値分
+
+  } else if (playerAction === "a" && enemyAction === "defend") { //プレイヤー攻撃 かつ 敵が防御の場合
+    enemyDamage = player.atk / 2;//敵のダメージはプレイヤーの攻撃力の値の1/2
+
+  } else if (playerAction === "d" && enemyAction === "attack") { //プレイヤー防御 かつ 敵が攻撃の場合
+    playerDamage = enemy.atk / 2;//プレイヤーのダメージは敵の攻撃力の値の1/2
+  }
+
+  // プレイヤーと敵の体力を更新する
+  player.hp -= enemyDamage; //プレイヤーの体力が減算、敵の攻撃力の分
+  enemy.hp -= playerDamage; //敵の       体力が減算、プレイヤーの攻撃力の分
+
+  // ゲームの終了条件をチェックする
+  if (player.hp <= 0 || enemy.hp <= 0) {  //プレイヤー又は敵の体力が0以下になれば
+    gameEnd = true;                       //ゲームの終了のフラグ
+  }
+}
+
+// ゲーム終了後の処理
+if (player.hp <= 0) {       //プレイヤーの体力が0以下になれば
+  console.log("You lose!"); //コンソールログにYou lose!woを表示
+
+} else if (enemy.hp <= 0) { //敵の体力が0以下になれば
+  console.log("You win!");  //コンソールログにYou win!を表示
+}

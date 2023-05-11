@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/battle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <title>ストリートファイター23</title>
+</head>
+<body>
+
+<h1>絶対勝てるストリートファイター23</h1>
+
+<div class="serect-btn">
+  <button id="attack-btn">攻撃する</button>
+  <button id="defend-btn">防御する</button>
+</div>
+
+<div class="character">
+  <img id="ryu"  src="../image/ryu.png">
+  <img id="vega" src="../image/vega.png">
+</div>
+
+
+
+<div class="top-tag">
+
+  <div class="player-tag1">
+        <div class="player-tag2">
+            <h2>RYU</h2>
+            <p class="p-tag">HP:100</p>
+            <p class="p-tag">攻撃力:15</p>
+        </div>
+  </div>
+  
+  <div class="enemy-tag1">
+        <div class="enemy-tag2">
+            <h2>VEGA</h2>
+            <p class="p-tag">HP:110</p>
+            <p class="p-tag">攻撃力:35</p>
+        </div> <br>
+    </div>
+  
+</div>
+
+
+<script>
+  const playerHP  = 100;  
+  const playerATK = 15 ;   
+  const enemyHP   = 100;    
+  const enemyATK  = 35 ;     
+  // ゲームの状態を表す変数
+  let gameEnd = false;    
+
+  // プレイヤーと敵の状態を管理するオブジェクト
+  const player = {  //変数宣言
+    hp:  playerHP,     
+    atk: playerATK
+  };
+
+  const enemy = {  //変数宣言
+    hp:  enemyHP,      
+    atk: enemyATK
+  };
+
+  let playerAction = ""; //変数宣言と初期化
+  let enemyAction  = ""; //変数宣言と初期化
+
+
+    // プレイヤーの行動を入力させる
+    $("#attack-btn").on("click",function(){
+    playerAction = "a";
+    console.log("プレイヤーの攻撃！");
+    });
+
+    $("#defend-btn").on("click",function(){
+    playerAction = "d";
+    console.log("プレイヤーは防御した");
+    });
+
+
+     //メインのゲームループ
+    const gameLoop = setInterval(() => {
+    if (player.hp <= 0 || enemy.hp <= 0 || gameEnd) {
+      clearInterval(gameLoop);
+      if(player.hp <= 0){
+        alert("You lose!");
+      } else if (enemy.hp <= 0) {
+        alert("You win!");
+      }
+    } else { 
+
+     //敵の行動を判定させる//攻撃と防御の選択は50%
+      enemyAction = Math.random() < 0.5 ? "attack" : "defend";
+      console.log(enemyAction); //"attack" or "defend"
+
+    // プレイヤーと敵の行動に従ってダメージを計算する
+        let playerDamage = 0; //変数宣言初期化
+        let enemyDamage = 0; //変数宣言初期化
+    if (playerAction !== "a" && enemyAction !== "attack") { 
+
+      playerDamage =  enemy.atk;
+      enemyDamage  = player.atk; 
+      console.log(playerAction); //"a" or "d"
+      console.log(enemyAction) ; //"attack" or "defend"
+      console.log(playerDamage); //35
+      console.log(enemyDamage) ; //15
+      $("#ryu").fadeOut(80).fadeIn(80).fadeOut(80).fadeIn(80)
+      $("#vega").fadeOut(80).fadeIn(80).fadeOut(80).fadeIn(80)
+
+  //     //又は、プレイヤーが攻撃かつ敵が防御した場合、ダメージを次の通り受ける
+    } else if (playerAction !== "a" && enemyAction !== "defend") { 
+      enemyDamage = player.atk / 2;
+      console.log(playerAction); //"a" or "d"
+      console.log(enemyAction) ; //"attack" or "defend"
+      console.log(playerDamage); //0
+      console.log(enemyDamage) ; //7.5
+      $("#ryu").fadeOut(80).fadeIn(80).fadeOut(80).fadeIn(80)
+
+  //    //又は、プレイヤーが防除かつ敵が攻撃した場合、ダメージを次の通り受ける
+    } else if (playerAction !== "d" && enemyAction !== "attack") { 
+      playerDamage = enemy.atk / 2;
+      console.log(playerAction);  //"a" or "d"
+      console.log(enemyAction) ;  //"attack" or "defend"
+      console.log(playerDamage);  //15
+      console.log(enemyDamage) ;  //7.5
+      $("#vega").fadeOut(80).fadeIn(80).fadeOut(80).fadeIn(80)
+    }
+
+  //   // プレイヤーと敵の体力を更新する
+    player.hp -= enemyDamage ; //"15" or "7.5"
+    enemy.hp  -= playerDamage; //"35" or "17.5"
+      console.log(player.hp); //プレイヤー100から減算
+      console.log(enemy.hp);  //敵        100から減算
+
+
+    // ゲームの終了条件をチェックする//体力が0以下になればゲーム終了フラグを出す
+    if (player.hp <= 0 || enemy.hp <= 0) { 
+      
+      gameEnd = true;               
+      console.log(gameEnd);
+    }
+  }
+}, 1000);
+
+</script>
+
+
+</body>
+</html>
